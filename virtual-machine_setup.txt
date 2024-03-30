@@ -1,0 +1,107 @@
+##How to create Virtual Machine Manager##
+
+sudo yum update
+sudo yum install virt-manager
+virt-manager
+------------------------------------------------
+virsh    
+virsh # snapshot-create-as server Myserver
+
+virsh # snapshot-create-as client Myclient
+exit
+-------------------------
+Create a dir:
+mkdir /reset
+cd /reset/
+-------------------
+Create a file name "server.sh"
+
+vim server.sh
+-------------------
+ 
+#!/bin/bash
+echo "############      Virtual Machine Manager         ############"
+virsh snapshot-revert server Myserver
+virsh start server
+echo "############      Server VM Reset Successfully         ############"
+
+--------------------
+-------------------
+Create a file name "client.sh"
+
+vim client.sh
+-------------------
+#!/bin/bash
+echo "############      Virtual Machine Manager         ############"
+virsh snapshot-revert client Myclient
+virsh start client
+echo "############      Client VM Reset Successfully         ############"
+------------------------
+cp client.sh all.sh
+vim all.sh
+-------------------
+#!/bin/bash
+echo "############      Virtual Machine Manager         ############"
+virsh snapshot-revert server Myserver
+virsh start server
+virsh snapshot-revert client Myclient
+virsh start client
+echo "############    Server  Client VM Reset Successfully         ############"
+---------------------
+
+
+vim /etc/bashrc
+------------------------
+adding this 3 lines:
+
+alias vm-reset-server='/reset/server.sh'
+alias vm-reset-client='/reset/client.sh'
+alias vm-reset-all='/reset/all.sh'
+
+---------------------------
+[root@sd reset]# source /etc/bashrc 
+[root@sd reset]# chmod +x *
+----------------------------------------------
+DONE
+------------------------------------------
+
+now check:
+
+[root@sd Desktop]# vm-reset-server 
+############	Virtual Machine Manager		############
+
+Domain 'server' started
+
+############      Server VM Reset Successfully         ############
+[root@sd Desktop]# vm-reset-client 
+############      Virtual Machine Manager         ############
+
+Domain 'client' started
+
+############      Client VM Reset Successfully         ############
+[root@sd Desktop]# vm-reset-all 
+############      Virtual Machine Manager         ############
+
+Domain 'server' started
+
+
+Domain 'client' started
+
+############    Server  Client VM Reset Successfully         ############
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+~                                                                              
